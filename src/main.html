@@ -19,13 +19,13 @@
                 <h2>To Do</h2>
                 <div class="task-list" ondragover="allowDrop(event)" ondrop="drop(event)">
                     <article class="task-card" draggable="true" ondragstart="drag(event)" id="task-1">
-                        <p>Fix a Bug</p>
+                        <p>Kanaban doesnt save</p>
                     </article>
                 </div>
             </section>
             <section class="kanaban-column" id="doing-column">
                 <h2>Doing</h2>
-                <div class="task-list" ondragover="allowDrop(event)" ondrop="drop(event)">
+                <div class="task-list" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
             </section>
             <section class="kanaban-column" id="done-column">
                 <h2>Done</h2>
@@ -36,12 +36,13 @@
         <div id="settingsDIV" class="settings hidden">
             <form onsubmit="handleSettings(event)">
                 <label for="workTime">Work Time:</label>
-                    <input value="25" id="workTime" type="number">
+                    <input value="25" name="workTime_S" id="workTime" type="number">
                 <label for="breakTime">Break Time:</label>
-                   <input value="5" id="breakTime" type="number">
+                   <input value="5" name="breakTime_S" id="breakTime" type="number">
                 <label for="doDiffrentBreaks">Enable short and long breaks:</label>
-                    <input checked type="checkbox" id="doDiffrentBreaks">
+                    <input checked type="checkbox" name="doDiffrentBreaks_S" id="doDiffrentBreaks">
                 <button type="submit">Save</button>
+                <button id="resetBtn" type="button" onclick="resetSettings();">Reset</button>
             </form>
         </div>
     </body>

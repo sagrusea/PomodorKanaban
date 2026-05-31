@@ -30,3 +30,8 @@ body, html {
 .hidden {
     display: none;
 }
+
+#resetBtn {
+    background-color: red;
+    color: white;
+}

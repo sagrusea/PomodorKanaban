@@ -11,15 +11,19 @@ let wasStarted = false;
 let settings = {}
 
 
-addEventListener("DOMContentLoaded", (event) => {
+addEventListener("DOMContentLoaded", async (event) => {
+    settings = await loadSettings();
+    applySettings();
+    console.log(settings)
     updateDisplay();
-    settings = loadSettings();
 })
 
+// --- SETTINGS ----
 async function saveSettings() {
     try {
         const serialSettings = JSON.stringify(settings);
         localStorage.setItem('userSettings', serialSettings);
+        applySettings();
     } catch (error) {
         console.error("Saving failed:",error);
     }
@@ -48,9 +52,23 @@ function handleSettings(event) {
     event.preventDefault();
 
     const formData = new FormData(event.target);
-    //todo
 
+    _settings = {
+        workTime: formData.get("workTime_S") * 60,
+        breakTime: formData.get("breakTime_S") * 60,
+        doDiffrentBreaks: formData.get("doDiffrentBreaks_S") === "on"
+    };
+    settings = _settings;
+    saveSettings();
 }
+
+function applySettings() {
+    defaultTime = settings.workTime;
+    defaultBreak = settings.breakTime;
+    timeLeft = defaultTime;
+}
+
+// ---- KANABAN ----
 
 function drag(event) {
     event.dataTransfer.setData("text/plain", event.target.id);
@@ -72,6 +90,8 @@ function drop(event) {
         targetList.appendChild(draggedCard);
     }
 }
+
+// ----- TIMER FUNCTIONS ----
 
 function startTimer() {
     if (!wasStarted) {
@@ -121,3 +141,16 @@ function updateDisplay() {
 }
 
 setInterval(tickTimer, 1000);
+
+function resetSettings() {
+    // TODO: make my own confirmation to make the app smoother.
+    confirm("Do you want to reset your settings?");
+    settings = {
+        workTime: 1500, 
+        breakTime: 300, 
+        doDiffrentBreaks: true
+    };
+    applySettings();
+    updateDisplay();
+    console.log("Oh no i forgot your settings :)")
+}
