@@ -53,7 +53,24 @@ function handleSettings(event) {
 }
 
 function drag(event) {
-    
+    event.dataTransfer.setData("text/plain", event.target.id);
+}
+
+function allowDrop(event) {
+    event.preventDefault();
+}
+
+function drop(event) {
+    event.preventDefault();
+
+    const cardID = event.dataTransfer.getData("text/plain");
+    const draggedCard = document.getElementById(cardID);
+
+    const targetList = event.target.closest('.task-list');
+
+    if (targetList) {
+        targetList.appendChild(draggedCard);
+    }
 }
 
 function startTimer() {
