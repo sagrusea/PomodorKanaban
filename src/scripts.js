@@ -4,6 +4,7 @@ const pauseBtn = document.getElementById("pause");
 const startBtn = document.getElementById("start");
 const settingsOverlay = document.getElementById("settingsDIV");
 const timerStatusDp = document.getElementById("timerStatus");
+const progressBar = document.getElementById("progressBar");
 let defaultTime = 10;
 let defaultBreak = 300;
 let status = 0; // 0 work | 1 break | 2 short break
@@ -297,6 +298,9 @@ function updateDisplay() {
     let displayMinutes = String(timeLeft_mins).padStart(2, '0');
 
     timeDisplay.textContent = `${displayMinutes}:${displaySeconds}`;
+
+    const progress = defaultTime > 0 ? (timeLeft / defaultTime) * 100 : 0;
+    progressBar.style.width = `${progress}%`;
 }
 
 setInterval(tickTimer, 1000);

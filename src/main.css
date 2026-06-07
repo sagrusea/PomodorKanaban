@@ -270,6 +270,26 @@ button:disabled {
     background-color: #ffdddd;
 }
 
+.progressContainer {
+    width: 100%;
+    max-width: 400px;
+    height: 12px;
+    min-height: 12px;
+    border: 2px solid var(--ink-medium);
+    border-radius: 6px;
+    margin: 10px auto 20px auto;
+    background-color: transparent;
+    overflow: hidden;
+    box-shadow: inset 1px 1px 4px rgba(53, 132, 228, 0.05);
+}
+
+#progressBar {
+    height: 100%;
+    width: 100%;
+    background-color: var(--ink-dark);
+    transition: width 1s linear, background-color 0.5s ease;
+}
+
 .hidden {
     display: none !important;
 }
