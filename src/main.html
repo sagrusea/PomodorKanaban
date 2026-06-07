@@ -8,39 +8,47 @@
     </head>
     <body id="body">
         <h1 id="time">20:00</h1>
+        <div id="timerStatus"></div>
         <div class="timerControls">
             <button id="start" onclick="startTimer()">Start</button>  
             <button id="pause" onclick="pauseTimer()">Pause</button>  
             <button id="reset" onclick="resetTimer()">Reset</button> 
         </div>
-        <div id="timerStatus"> work / rest</div>
         <div class="kanaban">
             <section class="kanaban-column" id="todo-column">
                 <h2>To Do</h2>
                 <div class="task-list" ondragover="allowDrop(event)" ondrop="drop(event)">
-                    <article class="task-card" draggable="true" ondragstart="drag(event)" id="task-1">
-                        <p>Kanaban doesnt save</p>
-                    </article>
+                </div>
+                <div class="addTask">
+                    <input type="text" placeholder="+ Add card..." onkeydown="handleNewCard(event, 'todo-column')">
                 </div>
             </section>
             <section class="kanaban-column" id="doing-column">
                 <h2>Doing</h2>
                 <div class="task-list" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
+                <div class="addTask">
+                    <input type="text" placeholder="+ Add card..." onkeydown="handleNewCard(event, 'doing-column')">
+                </div>
             </section>
             <section class="kanaban-column" id="done-column">
                 <h2>Done</h2>
                 <div class="task-list" ondragover="allowDrop(event)" ondrop="drop(event)"></div>
+                <div class="addTask">
+                    <input type="text" placeholder="+ Add card..." onkeydown="handleNewCard(event, 'done-column')">
+                </div>
             </section>
         </div>
-        <button class="clearBtn" onclick="openSettings()"><img style="width: 10vw; max-width: 50px;" src="./res/gear.svg" alt="settings"></button>
+        <button id="settingsBtn" class="clearBtn" onclick="openSettings()"><img style="width: 10vw; max-width: 50px;" src="./res/gear.svg" alt="settings"></button>
         <div id="settingsDIV" class="settings hidden">
             <form onsubmit="handleSettings(event)">
                 <label for="workTime">Work Time:</label>
-                    <input value="25" name="workTime_S" id="workTime" type="number">
+                    <input value="25" min="0.1" step="any" name="workTime_S" id="workTime" type="number">
                 <label for="breakTime">Break Time:</label>
-                   <input value="5" name="breakTime_S" id="breakTime" type="number">
+                   <input value="5" min="0.1" step="any" name="breakTime_S" id="breakTime" type="number">
                 <label for="doDiffrentBreaks">Enable short and long breaks:</label>
                     <input checked type="checkbox" name="doDiffrentBreaks_S" id="doDiffrentBreaks">
+                <label for="startAfterR">Start timer when Reset is pressed?</label>
+                    <input checked type="checkbox" name="startAfterR_S" id="startAfterR">
                 <button type="submit">Save</button>
                 <button id="resetBtn" type="button" onclick="resetSettings();">Reset</button>
             </form>

@@ -35,3 +35,38 @@ body, html {
     background-color: red;
     color: white;
 }
+
+#time {
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    width: 40vw;
+    font-size: 20vw;
+    margin: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#settingsBtn {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+}
+
+.delete-card-btn {
+    background: none;
+    border: none;
+    color: #ff4d4d;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 4px;
+    
+    opacity: 0;
+    visibility: hidden;
+
+    transition: opacity 0.15s ease, visibility 0.15s ease;
+}
+
+.task-card:hover .delete-card-btn {
+    opacity: 1;
+    visibility: visible;
+}

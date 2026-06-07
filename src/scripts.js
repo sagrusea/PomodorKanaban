@@ -1,21 +1,34 @@
+// const { userData } = require("three/tsl");
 const timeDisplay = document.getElementById("time");
 const pauseBtn = document.getElementById("pause");
 const startBtn = document.getElementById("start");
 const settingsOverlay = document.getElementById("settingsDIV");
-let defaultTime = 1500;
+const timerStatusDp = document.getElementById("timerStatus");
+let defaultTime = 10;
 let defaultBreak = 300;
 let status = 0; // 0 work | 1 break | 2 short break
 let timeLeft = defaultTime;
 let enableTimer = false;
 let wasStarted = false;
-let settings = {}
+let settings = {};
+const phaseText = {
+    work: "working",
+    break: "break",
+    shortBreak: "short break"
+}
+userData = {
+    completedSessions: 0,
+    current_phase: 0,
+    last_phase: 0
+}
 
 
 addEventListener("DOMContentLoaded", async (event) => {
     settings = await loadSettings();
     applySettings();
-    console.log(settings)
     updateDisplay();
+    loadKanaban();
+    handlePhaseStatus();
 })
 
 // --- SETTINGS ----
@@ -32,7 +45,7 @@ async function saveSettings() {
 async function loadSettings() {
     try {
         const serialSettings = localStorage.getItem('userSettings');
-        if (serialSettings === null) return 0;
+        if (serialSettings === null) return {workTime: 1500, breakTime: 300, doDiffrentBreaks: true};
         return JSON.parse(serialSettings);
     } catch (error) {
         console.error("loading failed:",error);
@@ -50,7 +63,6 @@ function closeSettings() {
 
 function handleSettings(event) {
     event.preventDefault();
-
     const formData = new FormData(event.target);
 
     _settings = {
@@ -88,13 +100,149 @@ function drop(event) {
 
     if (targetList) {
         targetList.appendChild(draggedCard);
+
+        saveKanaban();
     }
 }
 
+function saveKanaban() {
+    try {
+        const kanabanState = {
+            todo: [],
+            doing: [],
+            done: []
+        };
+
+        document.querySelectorAll('#todo-column .task-card').forEach(card => {
+            kanabanState.todo.push({ id: card.id, text: card.querySelector("p").textContent })
+        });
+
+        document.querySelectorAll('#doing-column .task-card').forEach(card => {
+            kanabanState.doing.push({ id: card.id, text: card.querySelector("p").textContent })
+        });
+
+        document.querySelectorAll('#done-column .task-card').forEach(card => {
+            kanabanState.done.push({ id: card.id, text: card.querySelector("p").textContent })
+        });
+
+        localStorage.setItem("kanabanSave", JSON.stringify(kanabanState));
+    } catch (error) {
+        console.error("failed to save the kanaban", error);
+    }
+}
+
+function loadKanaban() {
+    try {
+        const savedState = localStorage.getItem("kanabanSave");
+        if (!savedState) return;
+        const kanabanState =JSON.parse(savedState);
+
+        document.querySelectorAll(".task-list").forEach(list => list.innerHTML = "");
+
+        Object.keys(kanabanState).forEach(columnKey => {
+            const columnID = `${columnKey}-column`;
+            const columnContainer = document.querySelector(`#${columnID} .task-list`);
+
+            if (columnContainer) {
+                kanabanState[columnKey].forEach(cardData => {
+                    const cardElement = createCardElement(cardData.id, cardData.text);
+                    columnContainer.appendChild(cardElement);
+                });
+            }
+        });
+    } catch (error) {
+        console.error("failed to load kanaban:", error);
+    }
+}
+
+function createCardElement(id ,text) {
+    const article = document.createElement("article");
+    article.className = "task-card";
+    article.draggable = true;
+    article.id = id;
+
+    article.addEventListener("dragstart", drag);
+
+    const p = document.createElement("p");
+    p.textContent = text;
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "delete-card-btn";
+    deleteBtn.innerHTML = "&times;";
+
+    deleteBtn.onclick = function(event) {
+        event.stopPropagation();
+        article.remove();
+        saveKanaban();
+    };
+
+    article.appendChild(p);
+    article.appendChild(deleteBtn);
+    return article;
+}
+
+function handleNewCard(event, columnID) {
+    if (event.key !== "Enter") return;
+
+    const inputField = event.target;
+    const taskText = inputField.value.trim();
+
+    if (taskText === "") return;
+
+    const uniqueID = "task-" + Date.now();
+
+    const newCard = createCardElement(uniqueID, taskText);
+    const targetList = document.querySelector(`#${columnID} .task-list`);
+
+    if (targetList) {
+        targetList.appendChild(newCard);
+
+        saveKanaban();
+        inputField.value = "";
+    }
+}
 // ----- TIMER FUNCTIONS ----
+
+function switchPhase() {
+    // 0 work | 1 break | 2 short break
+    if (userData.current_phase === 0) {
+        userData.completedSessions++;
+
+        if (settings.doDiffrentBreaks && userData.completedSessions % 4 === 0) {
+            userData.current_phase = 1;
+            defaultTime = timeLeft = settings.breakTime*3;
+           
+        } else {
+            userData.current_phase = 2;
+            defaultTime = timeLeft = settings.breakTime;
+            timerStatusDp.textContent = phaseText.shortBreak;
+        }
+    } else {
+        userData.current_phase = 0;
+        defaultTime = timeLeft = settings.workTime;
+        userData.completedSessions++;
+    }
+}
+
+function handlePhaseStatus() {
+    switch (userData.current_phase) {
+        case 0:
+            timerStatusDp.textContent = phaseText.work;
+            break;
+        case 1:
+            timerStatusDp.textContent = phaseText.break;
+            break;
+        case 2:
+            timerStatusDp.textContent = phaseText.shortBreak;
+            break;
+        default:
+            break;
+    }
+}
 
 function startTimer() {
     if (!wasStarted) {
+        handlePhaseStatus();
         timeLeft = defaultTime;
         enableTimer = true;
         wasStarted = true;
@@ -119,6 +267,12 @@ function resetTimer() {
     enableTimer = false;
     startBtn.removeAttribute('disabled');
     updateDisplay();
+    userData = {
+        completedSessions: 0,
+        current_phase: 0,
+        last_phase: 0
+    }
+    handlePhaseStatus();
 };
 
 function tickTimer() {
@@ -126,7 +280,12 @@ function tickTimer() {
         if (timeLeft > 0) {
             timeLeft -= 1;
             updateDisplay();
-        } else enableTimer = false;
+        } else { 
+            enableTimer = false;
+            switchPhase();
+            handlePhaseStatus();
+            enableTimer = true;
+        }
     }
 };
 
@@ -153,4 +312,26 @@ function resetSettings() {
     applySettings();
     updateDisplay();
     console.log("Oh no i forgot your settings :)")
+    saveSettings();
+}
+
+
+// ---- USER DATA ----
+async function saveUserData() {
+    try {
+        const _userData = JSON.stringify(userData);
+        localStorage.setItem("userData", _userData);
+    } catch (error) {
+        console.error("couldnt save data:", error);
+    }
+}
+
+async function loadUserData() {
+    try {
+        const _userData = localStorage.getItem("userData");
+        if (userData === null) return 0;
+        return JSON.parse(_userData);
+    } catch (error) {
+        console.error("couldn load user data:", error);
+    }
 }
