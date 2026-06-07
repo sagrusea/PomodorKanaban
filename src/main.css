@@ -1,72 +1,275 @@
+:root {
+    --ink-dark: #1a5fb4;
+    --ink-medium: #3584e4;
+    --ink-light: #a4ccff;
+    --paper-bg: #f6f9fc;
+    --grid-line: #e1ecf7;
+}
+
 body, html {
     margin: 0;
     padding: 0;
     height: 100%;
+    box-sizing: border-box;
 }
 
+body {
+    background-color: var(--paper-bg);
+    background-image: 
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 25px 25px;
+    font-family: "Fredoka", sans-serif;
+    color: var(--ink-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px;
+    transition: background-color 0.5s ease;;
+}
+
+#time {
+    font-family: "Architects Daughter", cursive, sans-serif;
+    font-size: 8rem;
+    font-weight: bold;
+    margin: 0;
+    text-shadow: 2px 2px 0px rgba(53, 132, 228, 0.15);
+    letter-spacing: -2px;
+}
+
+#timerStatus {
+    font-family: "Architects Daughter", cursive, sans-serif;
+    font-size: 1.8rem;
+    text-transform: uppercase;
+    margin-top: -10px;
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+    color: var(--ink-medium);
+}
+
+.timerControls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 40px;
+}
+
+button {
+    font-family: "Fredoka", sans-serif;
+    background-color: transparent;
+    border: 2px solid var(--ink-medium);
+    color: var(--ink-dark);
+    padding: 8px 20px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+    cursor: pointer;
+    box-shadow: 2px 3px 0px rgba(26, 95, 180, 0.2);
+    transition: all 0.15s ease-in-out;
+}
+
+button:hover {
+    transform: translate(1px, 2px);
+    box-shadow: 3px 5px 0px rgba(26, 95, 180, 0.3);
+}
+
+button:active {
+    transform: translate(1px, 2px);
+    box-shadow: 0px 0px 0px transparent;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    background: transparent;
+    border-color: var(--ink-light);
+    color: var(--ink-light);
+    box-shadow: none;
+}
 
 .kanaban {
     display: flex;
-    gap: 20px;
+    gap: 24px;
+    width: 100%;
+    max-width: 1100px;
     justify-content: space-between;
     align-items: flex-start;
+    margin-bottom: 60px;
 }
 
 .kanaban-column {
     flex: 1;
-    border-radius: 8px;
-    padding: 15px;
+    background: rgba(255, 255, 255, 0.7);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    border: 2px dashed var(--ink-medium);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 4px 4px 15px rgba(53, 132, 228, 0.04);
+}
+
+.kanaban-column h2 {
+    font-family: "Architects Daughter", cursive, sans-serif;
+    margin: 0 0 15px 0;
+    font-size: 1.6rem;
+    border-bottom: 2px solid var(--ink-light);
+    padding-bottom: 5px;
+    color: var(--ink-dark);
 }
 
 .task-list {
-    min-height: 400px;
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.clearBtn {
-    background: none;
-    border: none;
+.task-card {
+    background: #ffffff;
+    border: 2px solid var(--ink-medium);
+    border-radius: 8px 4px 8px 5px/4px 8px 5px 7px;
+    padding: 12px 14px;
+    cursor: grab;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 2px 3px 6px rgba(26, 95, 180, 0.08);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
-.hidden {
-    display: none;
+.task-card:active {
+    cursor: grabbing;
 }
 
-#resetBtn {
-    background-color: red;
-    color: white;
-}
-
-#time {
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    width: 40vw;
-    font-size: 20vw;
+.task-card p {
     margin: 0;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-#settingsBtn {
-    position: fixed;
-    bottom: 10px;
-    left: 10px;
+    font-size: 1.05rem;
+    font-weight: 500;
+    word-break: break-word;
+    padding-right: 10px;
 }
 
 .delete-card-btn {
     background: none;
     border: none;
+    box-shadow: none;
     color: #ff4d4d;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     line-height: 1;
     cursor: pointer;
     padding: 0 4px;
-    
     opacity: 0;
     visibility: hidden;
+    transition: opacity 0.15s ease-in-out, visibility 0.15s ease-in-out, transform 0.1s ease-in-out;
+}
 
-    transition: opacity 0.15s ease, visibility 0.15s ease;
+.delete-card-btn:hover {
+    background: none;
+    box-shadow: none;
+    transform: scale(1.2);
 }
 
 .task-card:hover .delete-card-btn {
     opacity: 1;
     visibility: visible;
+}
+
+.addTask {
+    margin-top: 15px;
+}
+
+.addTask input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 12px;
+    border: 1px dashed var(--ink-medium);
+    background: transparent;
+    border-radius: 6px;
+    color: var(--ink-dark);
+    font-family: "Fredoka", sans-serif;
+    font-size: 0.95rem;
+}
+
+.addTask input::placeholder {
+    color: var(--ink-light);
+}
+
+.addTask input:focus {
+    outline: none;
+    border: 2px solid var(--ink-dark);
+    background: #ffffff;
+}
+
+#settingsBtn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 10;
+}
+
+#settingsBtn img {
+    width: 32px;
+    height: 32px;
+    transition: transform 0.4s ease;
+}
+
+#settingsBtn:hover img {
+    transform: rotate(45deg);
+}
+
+.settings {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffffff;
+    border: 3px solid var(--ink-dark);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(26, 95, 180, 0.25);
+    z-index: 100;
+    width: 320px;
+}
+
+.settings form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.settings label {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.settings input[type="number"] {
+    padding: 6px 10px;
+    border: 2px solid var(--ink-medium);
+    border-radius: 6px;
+    font-family: "Fredoka", sans-serif;
+    color: var(--ink-dark);
+}
+
+.settings button[type="submit"] {
+    margin-top: 10px;
+    background-color: var(--ink-medium);
+    color: #ffffff;
+}
+
+.settings button[type="submit"]:hover {
+    background-color: var(--ink-dark);
+}
+
+#resetBtn {
+    background-color: #ffefef;
+    border-color: #ff4d4d;
+    color: #cc0000;
+}
+
+#resetBtn:hover {
+    background-color: #ffdddd;
+}
+
+.hidden {
+    display: none !important;
 }

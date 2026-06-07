@@ -4,7 +4,11 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Productivity app</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Architects_Daughter&family=Fredoka:wght@300..700&display=swap" rel="stylesheet">   
         <link rel="stylesheet" href="main.css">
+
     </head>
     <body id="body">
         <h1 id="time">20:00</h1>
@@ -51,6 +55,8 @@
                     <input checked type="checkbox" name="startAfterR_S" id="startAfterR">
                 <button type="submit">Save</button>
                 <button id="resetBtn" type="button" onclick="resetSettings();">Reset</button>
+                <button id="closeSettings-Btn" type="button" onclick="closeSettings()">&times;</button>
+                <p>Made by <a href="github.com/sagrusea">sagrusea &hearts;</a></p>
             </form>
         </div>
     </body>
