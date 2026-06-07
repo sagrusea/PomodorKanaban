@@ -1,4 +1,4 @@
 # PomodorKanaban
-A pomodoro timer with a kanaband task list
+A pomodoro timer with a kanaban task list
 
 pomodoro timer has work and rest time
